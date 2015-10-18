@@ -1,22 +1,24 @@
 from django.http import JsonResponse
-from django.shortcuts import render
-from flask import Flask, session
-# from flask.ext.sqlalchemy import SQLAlchemy
 from core.models import Building, Crimes
 from django.core import serializers
-import sqlalchemy
-import aldjemy
+import json
+
 
 def building_view(request):
-    # building = Building.objects.all()
-    # data = building.crimes_set.all()
     data = Building.objects.all()
     return JsonResponse(serializers.serialize('json', data), safe=False)
 
 
+# todo: refactor this
+# todo: add filtering
 def crimes_view(request):
-    data = Crimes.odjects.all()
-    # data = Crimes.objects.all().values('building__street', 'building__number')
-    # data = crimes.biulding_set.all()
-    # data = Crimes.objects.prefetch_related('building_set')
-    return JsonResponse(serializers.serialize('json', data), safe=False)
+    data = Crimes.objects.filter(pk=1).select_related('building_id')
+    crimes_dict = []
+    for crime in data:
+        crimes_dict.append(crime.__dict__)
+        crimes_dict[-1]['building'] = crime.building_id.__dict__
+        crimes_dict[-1]['year_month'] = str(crimes_dict[-1]['year_month'])
+        del crimes_dict[-1]['_state']
+        del crimes_dict[-1]['building']['_state']
+        del crimes_dict[-1]['_building_id_cache']
+    return JsonResponse(json.dumps(crimes_dict), safe=False)
