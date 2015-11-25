@@ -4,9 +4,11 @@ from django.db import models
 class Building(models.Model):
     street = models.CharField(max_length=100)
     number = models.IntegerField()
-    longitude = models.FloatField()
-    latitude = models.FloatField()
-
+    # longitude = models.FloatField()
+    # latitude = models.FloatField()
+    longitude = models.DecimalField(max_digits=19, decimal_places=15)
+    latitude = models.DecimalField(max_digits=19, decimal_places=15)
+    quadkey = models.FloatField(db_index=True)
 
 class Crimes(models.Model):
     building_id = models.ForeignKey(Building, related_name='building')

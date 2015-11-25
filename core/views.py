@@ -1,10 +1,16 @@
-from django.http import JsonResponse
-from core.models import Building, Crimes
-from django.core import serializers
 import json
-
+from django.http import JsonResponse
+from django.core import serializers
+from core.models import Building, Crimes
+from core.tileSystem import TileSystem
 
 def building_view(request):
+    # bbox = request.GET['bbox']
+    # # print ('BBOX: ', bbox)
+    # z = request.GET['z']
+    # # print ('Z: ', z)
+    # print(TileSystem.lalka(z))
+
     data = Building.objects.all()
     return JsonResponse(serializers.serialize('json', data), safe=False)
 
